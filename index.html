@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendo - Attendance Calculator</title>
+    <style>
+        /* Basic Reset & Root Variables */
+        :root {
+            /* --- Theme Color Definitions --- */
+
+            /* Light Theme (Default) */
+            --bg-color-light: #ffffff;
+            --text-color-light: #000000;
+            --input-bg-light: #f0f0f0;
+            --input-border-light: #cccccc;
+            --button-bg-light: #4CAF50; /* Green */
+            --button-text-light: #ffffff;
+            --button-hover-light: #45a049;
+            --reset-bg-light: #f44336; /* Red */
+            --reset-hover-light: #e53935;
+            --link-color-light: #007bff;
+            --note-color-light: #333333; /* Used for footer too */
+            --border-color-light: #e0e0e0;
+            --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --result-number-color-light: #4CAF50;
+            --about-bg-light: #f9f9f9;
+            /* Removed footer highlight variable */
+
+            /* Dark Theme */
+            --bg-color-dark: #121212;
+            --text-color-dark: #e0e0e0;
+            --input-bg-dark: #2c2c2c;
+            --input-border-dark: #555555;
+            --button-bg-dark: #5cb85c;
+            --button-text-dark: #ffffff;
+            --button-hover-dark: #4cae4c;
+            --reset-bg-dark: #d9534f;
+            --reset-hover-dark: #c9302c;
+            --link-color-dark: #58a6ff;
+            --note-color-dark: #cccccc; /* Used for footer too */
+            --border-color-dark: #444444;
+            --shadow-dark: 0 2px 4px rgba(255, 255, 255, 0.05);
+            --result-number-color-dark: #5cb85c;
+            --about-bg-dark: #1e1e1e;
+            /* Removed footer highlight variable */
+
+            /* Light Pink Theme */
+            --bg-color-pink: #fff0f5;
+            --text-color-pink: #5c3c45;
+            --input-bg-pink: #ffe4e1;
+            --input-border-pink: #ffc0cb;
+            --button-bg-pink: #ff69b4;
+            --button-text-pink: #ffffff;
+            --button-hover-pink: #ff5aae;
+            --reset-bg-pink: #db7093;
+            --reset-hover-pink: #d16083;
+            --link-color-pink: #c71585;
+            --note-color-pink: #6b4a54; /* Used for footer too */
+            --border-color-pink: #ffdde1;
+            --shadow-pink: 0 2px 4px rgba(100, 50, 60, 0.1);
+            --result-number-color-pink: #ff1493;
+            --about-bg-pink: #fff5f8;
+            /* Removed footer highlight variable */
+
+            /* --- Default Theme Application (Light) --- */
+            --bg-color: var(--bg-color-light);
+            --text-color: var(--text-color-light);
+            --input-bg: var(--input-bg-light);
+            --input-border: var(--input-border-light);
+            --button-bg: var(--button-bg-light);
+            --button-text: var(--button-text-light);
+            --button-hover: var(--button-hover-light);
+            --reset-bg: var(--reset-bg-light);
+            --reset-hover: var(--reset-hover-light);
+            --link-color: var(--link-color-light);
+            --note-color: var(--note-color-light);
+            --border-color: var(--border-color-light);
+            --shadow: var(--shadow-light);
+            --result-number-color: var(--result-number-color-light);
+            --about-bg: var(--about-bg-light);
+        }
+
+        /* --- Theme Overrides --- */
+        body.dark-mode {
+            --bg-color: var(--bg-color-dark);
+            --text-color: var(--text-color-dark);
+            --input-bg: var(--input-bg-dark);
+            --input-border: var(--input-border-dark);
+            --button-bg: var(--button-bg-dark);
+            --button-text: var(--button-text-dark);
+            --button-hover: var(--button-hover-dark);
+            --reset-bg: var(--reset-bg-dark);
+            --reset-hover: var(--reset-hover-dark);
+            --link-color: var(--link-color-dark);
+            --note-color: var(--note-color-dark);
+            --border-color: var(--border-color-dark);
+            --shadow: var(--shadow-dark);
+            --result-number-color: var(--result-number-color-dark);
+            --about-bg: var(--about-bg-dark);
+        }
+
+        body.pink-mode {
+            --bg-color: var(--bg-color-pink);
+            --text-color: var(--text-color-pink);
+            --input-bg: var(--input-bg-pink);
+            --input-border: var(--input-border-pink);
+            --button-bg: var(--button-bg-pink);
+            --button-text: var(--button-text-pink);
+            --button-hover: var(--button-hover-pink);
+            --reset-bg: var(--reset-bg-pink);
+            --reset-hover: var(--reset-hover-pink);
+            --link-color: var(--link-color-pink);
+            --note-color: var(--note-color-pink);
+            --border-color: var(--border-color-pink);
+            --shadow: var(--shadow-pink);
+            --result-number-color: var(--result-number-color-pink);
+            --about-bg: var(--about-bg-pink);
+        }
+
+
+        /* --- General Styles --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        html {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+                Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Container */
+        .container {
+            background-color: var(--bg-color);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 500px;
+            margin-top: 20px;
+             margin-bottom: 20px;
+            position: relative;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        h1 {
+             color: var(--button-bg);
+             margin-bottom: 5px;
+             font-size: 2.2em;
+             transition: color 0.3s ease;
+        }
+
+        header p {
+            font-size: 1.1em;
+            color: var(--note-color);
+            /* Adjust padding slightly if toggle button overlaps */
+            padding: 0 50px 0 40px; /* More padding on right */
+            margin: 0 auto;
+            transition: color 0.3s ease;
+        }
+
+        /* Theme Toggle */
+        #theme-toggle {
+            position: absolute;
+            top: 10px; /* Adjusted for more space from top edge */
+            right: 10px; /* Adjusted for more space from right edge */
+            background: none;
+            border: none;
+            font-size: 1.4em;
+            line-height: 1;
+            cursor: pointer;
+            color: var(--text-color);
+            padding: 5px; /* Keep clickable area reasonable */
+            transition: color 0.3s ease, opacity 0.2s ease;
+            z-index: 10;
+        }
+        #theme-toggle:hover {
+            opacity: 0.8;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            font-size: 0.95em;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--input-border);
+            border-radius: 5px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1em;
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            -moz-appearance: textfield;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--button-bg);
+        }
+        input[type="number"].input-error {
+             border-color: var(--reset-bg);
+        }
+        #target-warning {
+             color: var(--reset-bg);
+             display: none;
+             margin-top: 4px;
+             font-size: 0.85em;
+             transition: color 0.3s ease;
+         }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.2s ease, transform 0.1s ease, color 0.3s ease;
+            text-align: center;
+        }
+
+        #calculate-btn {
+            background-color: var(--button-bg);
+            color: var(--button-text);
+        }
+        #calculate-btn:hover {
+            background-color: var(--button-hover);
+        }
+         #calculate-btn.calculating {
+            transform: scale(1.03);
+        }
+
+        #reset-btn {
+            background-color: var(--reset-bg);
+            color: var(--button-text-light);
+        }
+        #reset-btn:hover {
+            background-color: var(--reset-hover);
+        }
+
+        /* Result Area */
+        #result-area {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: var(--input-bg);
+            border-radius: 5px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.3s ease, border-color 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+        #result-area.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        #result-text {
+            font-size: 1.2em;
+            color: var(--text-color);
+            font-weight: normal;
+            transition: color 0.3s ease;
+        }
+        #result-text .result-number {
+            font-weight: bold;
+            color: var(--result-number-color);
+             transition: color 0.3s ease;
+         }
+        #result-text.error {
+            color: var(--reset-bg);
+            font-weight: bold;
+         }
+
+        /* Notes Section */
+        #notes-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9em;
+            color: var(--note-color);
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+        #notes-section p {
+            margin-bottom: 8px;
+            color: inherit;
+        }
+         #notes-section strong {
+             color: var(--text-color);
+              transition: color 0.3s ease;
+         }
+
+        /* About Section */
+        #about-section {
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: var(--about-bg);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        #about-section summary {
+            padding: 10px 15px;
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
+            user-select: none;
+            list-style: none;
+            position: relative;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+         #about-section summary::-webkit-details-marker {
+            display: none;
+        }
+         #about-section summary::after {
+             content: '▼';
+             position: absolute;
+             right: 15px;
+             top: 50%;
+             transform: translateY(-50%);
+             font-size: 0.8em;
+             transition: transform 0.2s ease, color 0.3s ease;
+             color: var(--text-color);
+         }
+         #about-section[open] summary::after {
+             transform: translateY(-50%) rotate(180deg);
+         }
+         #about-section div {
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9em;
+            color: var(--note-color);
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+         #about-section div p {
+             margin-bottom: 10px;
+             color: inherit;
+         }
+         #about-section div p:last-child {
+             margin-bottom: 0;
+         }
+         .creator-underline {
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 2px;
+            color: inherit;
+         }
+
+         /* Footer */
+        #page-footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9em;
+            color: var(--note-color); /* Use note color for footer */
+            width: 100%;
+            padding-bottom: 15px;
+             transition: color 0.3s ease;
+        }
+        #page-footer p {
+            color: inherit;
+        }
+        /* Removed .footer-highlight class styling */
+
+
+        /* Responsive Adjustments */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            header p {
+                font-size: 1em;
+                 padding: 0 10px; /* Reset padding on mobile */
+            }
+            .container {
+                padding: 20px;
+                 margin-top: 10px;
+                 margin-bottom: 10px;
+            }
+            button {
+                font-size: 1em;
+                padding: 10px 12px;
+            }
+             #result-text {
+                font-size: 1.1em;
+            }
+            #theme-toggle {
+                 /* Keep mobile positioning closer to edge */
+                 top: 5px;
+                 right: 5px;
+                 font-size: 1.3em;
+             }
+            #page-footer {
+                font-size: 0.85em;
+            }
+        }
+
+    </style>
+</head>
+<body> <!-- Theme class will be added here by JS -->
+
+    <div class="container">
+        <button id="theme-toggle" title="Switch to Dark Mode">
+            <span id="theme-icon">☀️</span>
+        </button>
+
+        <header>
+            <h1>Attendo</h1>
+            <p>Find out how many lectures you need to reach your target attendance %</p>
+        </header>
+
+        <form id="attendance-form">
+            <div class="form-group">
+                <label for="currentPercentage">Current Attendance %</label>
+                <input type="number" id="currentPercentage" name="currentPercentage" step="0.001" min="0" max="99.999" required placeholder="e.g., 72.5">
+            </div>
+
+            <div class="form-group">
+                <label for="targetPercentage">Target Attendance %</label>
+                <input type="number" id="targetPercentage" name="targetPercentage" step="0.001" min="0" max="99.999" required placeholder="e.g., 75 (must be less than 100)">
+                 <small id="target-warning">Target must be less than 100%.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="totalLectures">Total Lectures Conducted So Far</label>
+                <input type="number" id="totalLectures" name="totalLectures" step="1" min="0" required placeholder="e.g., 50">
+            </div>
+
+            <div class="button-group">
+                <button type="submit" id="calculate-btn">Calculate</button>
+                <button type="button" id="reset-btn">Reset</button>
+            </div>
+        </form>
+
+        <div id="result-area">
+            <p id="result-text"></p> <!-- Content set by JS -->
+        </div>
+
+        <div id="notes-section">
+            <p><strong>Important Notes:</strong></p>
+            <p><strong>Note 1:</strong> These results assume full attendance from now on. If you miss any class, the result changes and you’ll need to recalculate.</p>
+            <p><strong>Note 2:</strong> 100% attendance isn't possible with this tool. If you're aiming for 100%, use 99.6% or higher (but less than 100%) as your target, as ERP systems often round up near 100%.</p>
+        </div>
+
+         <details id="about-section">
+            <summary>About Attendo</summary>
+            <div>
+                <p>A simple tool to help students calculate how many lectures they need to attend to reach their target attendance.</p>
+                <p>Many colleges require minimum attendance to be eligible for exams. This tool gives a clear picture of where students stand—no guesswork.</p>
+                <p>It helps reduce anxiety, avoid academic penalties, and supports discussions with faculty when attendance is low.</p>
+                <p>Created by <span class="creator-underline">Harsh Sharma</span>, currently a B.Sc. student at Invertis University, Bareilly.</p>
+            </div>
+        </details>
+
+    </div> <!-- /container -->
+
+    <footer id="page-footer">
+        <p>© 2025 Harsh Sharma</p> <!-- Removed highlight span -->
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const form = document.getElementById('attendance-form');
+            const currentPercentageInput = document.getElementById('currentPercentage');
+            const targetPercentageInput = document.getElementById('targetPercentage');
+            const totalLecturesInput = document.getElementById('totalLectures');
+            const calculateBtn = document.getElementById('calculate-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const resultArea = document.getElementById('result-area');
+            const resultText = document.getElementById('result-text');
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            const targetWarning = document.getElementById('target-warning');
+            const bodyElement = document.body;
+
+            // --- Local Storage Keys ---
+            const LS_PREFIX = 'attendo_';
+            const LS_THEME = LS_PREFIX + 'theme_v4'; // Keep versioning consistent
+
+            // --- Theme Management ---
+            const themes = ['light', 'dark', 'pink'];
+            const themeClasses = ['', 'dark-mode', 'pink-mode'];
+            const themeIcons = ['☀️', '🌙', '🌸']; // Sun (Light), Moon (Dark), Flower (Pink)
+            const themeTitles = ['Switch to Dark Mode', 'Switch to Pink Mode', 'Switch to Light Mode'];
+
+            let currentThemeIndex = 0;
+
+            const applyTheme = (index) => {
+                themeClasses.forEach(cls => {
+                    if (cls) bodyElement.classList.remove(cls);
+                });
+                if (themeClasses[index]) {
+                    bodyElement.classList.add(themeClasses[index]);
+                }
+                themeIcon.textContent = themeIcons[index];
+                themeToggleBtn.title = themeTitles[index];
+                currentThemeIndex = index;
+            };
+
+             // --- Initial Theme Setup ---
+             const savedThemeName = localStorage.getItem(LS_THEME);
+             let savedThemeIndex = themes.indexOf(savedThemeName);
+             if (savedThemeIndex === -1) {
+                 savedThemeIndex = 0;
+             }
+             applyTheme(savedThemeIndex);
+
+
+            // --- Functions (Calculation, Validation, Reset - unchanged) ---
+            const displayResult = (message, isError = false, lecturesNeeded = null) => {
+                resultText.innerHTML = '';
+                resultText.classList.remove('error');
+
+                if (isError) {
+                    resultText.textContent = message;
+                    resultText.classList.add('error');
+                } else if (lecturesNeeded !== null) {
+                    const prefix = "You need to attend the next ";
+                    const suffix = ` lecture${lecturesNeeded === 1 ? '' : 's'} consecutively.`;
+                    resultText.innerHTML = `${prefix}<span class="result-number">${lecturesNeeded}</span>${suffix}`;
+                } else {
+                     resultText.textContent = message;
+                }
+                resultArea.classList.add('show');
+            };
+
+
+            const clearResult = () => {
+                resultText.innerHTML = '';
+                resultText.classList.remove('error');
+                resultArea.classList.remove('show');
+            };
+
+            const validateInput = (inputElement) => {
+                let value = inputElement.value;
+                inputElement.classList.remove('input-error');
+                targetWarning.style.display = 'none';
+
+                if (parseFloat(value) < 0) {
+                    value = '0';
+                    inputElement.value = value;
+                }
+
+                if ((inputElement.id === 'currentPercentage' || inputElement.id === 'targetPercentage') && value.includes('.')) {
+                    const decimalPart = value.split('.')[1];
+                    if (decimalPart && decimalPart.length > 3) {
+                        const numValue = parseFloat(value);
+                        inputElement.value = parseFloat(numValue.toFixed(3));
+                        value = inputElement.value;
+                    }
+                }
+
+                 if (inputElement.id === 'targetPercentage') {
+                    const targetValue = parseFloat(value);
+                    if (!isNaN(targetValue) && targetValue >= 100) {
+                         targetWarning.style.display = 'block';
+                         inputElement.classList.add('input-error');
+                    }
+                 }
+
+                if (value !== '' && isNaN(parseFloat(value))) {
+                     inputElement.classList.add('input-error');
+                     return false;
+                }
+
+                return true;
+            };
+
+
+            const handleCalculate = (event) => {
+                event.preventDefault();
+                clearResult();
+
+                let isFormValid = true;
+                const inputsToValidate = [currentPercentageInput, targetPercentageInput, totalLecturesInput];
+
+                inputsToValidate.forEach(input => {
+                    validateInput(input);
+                    if (input.value === '') {
+                        isFormValid = false;
+                        input.classList.add('input-error');
+                    }
+                    if (input.classList.contains('input-error')) {
+                         isFormValid = false;
+                    }
+                 });
+
+                 if (!isFormValid) {
+                    displayResult("Please fill in all fields correctly.", true);
+                    return;
+                }
+
+                const PK = parseFloat(currentPercentageInput.value);
+                const PD = parseFloat(targetPercentageInput.value);
+                const YK = parseInt(totalLecturesInput.value, 10);
+
+                 let errorMessages = [];
+                 if (isNaN(PK)) errorMessages.push("Invalid Current Percentage format.");
+                 if (isNaN(PD)) errorMessages.push("Invalid Target Percentage format.");
+                 if (isNaN(YK) || !Number.isInteger(YK)) errorMessages.push("Total Lectures must be a whole number.");
+
+                 if (!isNaN(PK) && (PK < 0 || PK > 99.999)) errorMessages.push("Current Percentage out of range (0-99.999).");
+                 if (!isNaN(PD) && (PD < 0 || PD >= 100)) errorMessages.push("Target Percentage out of range (0-99.999).");
+                 if (!isNaN(YK) && YK < 0) errorMessages.push("Total Lectures cannot be negative.");
+
+                if (errorMessages.length === 0 && PD <= PK) {
+                    errorMessages.push("Target Percentage must be higher than Current Percentage.");
+                     targetPercentageInput.classList.add('input-error');
+                     currentPercentageInput.classList.add('input-error');
+                }
+
+                if (errorMessages.length > 0) {
+                    displayResult(errorMessages.join(" "), true);
+                     if(errorMessages.some(e => e.includes("Current"))) currentPercentageInput.classList.add('input-error');
+                     if(errorMessages.some(e => e.includes("Target"))) targetPercentageInput.classList.add('input-error');
+                     if(errorMessages.some(e => e.includes("Lectures"))) totalLecturesInput.classList.add('input-error');
+                    return;
+                }
+
+                 const numerator = (PD - PK) * YK;
+                 const denominator = 100 - PD;
+
+                 if (denominator <= 0) {
+                     displayResult("Calculation error: Target percentage must be less than 100.", true);
+                     targetPercentageInput.classList.add('input-error');
+                     return;
+                 }
+
+                 const lecturesNeededRaw = numerator / denominator;
+                 const lecturesNeeded = Math.ceil(lecturesNeededRaw);
+
+                 if (lecturesNeeded <= 0) {
+                    displayResult("You have already met or exceeded the target percentage!");
+                 } else if (!isFinite(lecturesNeeded)) {
+                     displayResult("Calculation resulted in an invalid number. Check inputs.", true);
+                 } else {
+                     displayResult(null, false, lecturesNeeded);
+                 }
+
+                 calculateBtn.classList.add('calculating');
+                 setTimeout(() => {
+                    calculateBtn.classList.remove('calculating');
+                 }, 300);
+            };
+
+            const handleReset = () => {
+                form.reset();
+                clearResult();
+                targetWarning.style.display = 'none';
+                currentPercentageInput.classList.remove('input-error');
+                targetPercentageInput.classList.remove('input-error');
+                totalLecturesInput.classList.remove('input-error');
+            };
+
+            const handleThemeToggle = () => {
+                const nextThemeIndex = (currentThemeIndex + 1) % themes.length;
+                applyTheme(nextThemeIndex);
+                localStorage.setItem(LS_THEME, themes[nextThemeIndex]);
+            };
+
+            // --- Event Listeners ---
+            form.addEventListener('submit', handleCalculate);
+            resetBtn.addEventListener('click', handleReset);
+            themeToggleBtn.addEventListener('click', handleThemeToggle);
+
+            currentPercentageInput.addEventListener('input', () => validateInput(currentPercentageInput));
+            targetPercentageInput.addEventListener('input', () => validateInput(targetPercentageInput));
+            totalLecturesInput.addEventListener('input', () => validateInput(totalLecturesInput));
+
+        }); // End DOMContentLoaded
+    </script>
+
+</body>
+</html>
